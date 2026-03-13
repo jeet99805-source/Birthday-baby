@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Bhavika ✨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        :root {
+            --pink: #ffb6c1;
+            --peach: #ffdab9;
+            --lavender: #e6e6fa;
+            --cream: #fffdd0;
+            --text-dark: #4a3028;
+            --glow: #ffffff;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at center, var(--peach) 0%, var(--pink) 50%, #d8bfd8 100%);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Sparkle Canvas */
+        #sparkles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Shared Scene Styling */
+        .scene {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .active {
+            pointer-events: auto;
+        }
+
+        h1, h2, p {
+            margin: 0;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.9);
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            color: #d1495b;
+            letter-spacing: 2px;
+            animation: textGlow 3s infinite alternate;
+        }
+
+        @keyframes textGlow {
+            0% { text-shadow: 0 0 10px rgba(255,255,255,0.8); }
+            100% { text-shadow: 0 0 25px rgba(255,255,255,1), 0 0 10px #d1495b; }
+        }
+
+        /* Start Button */
+        #start-btn {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: #d1495b;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            pointer-events: auto;
+            z-index: 100;
+        }
+
+        #start-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(209, 73, 91, 0.3);
+        }
+
+        /* Plush Elements */
+        .plush {
+            font-size: 4.5rem;
+            filter: drop-shadow(0 15px 15px rgba(0,0,0,0.2)) saturate(1.2);
+            display: inline-block;
+            margin: 0 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .plush:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .garden-container {
+            position: absolute;
+            bottom: 15%;
+            display: flex;
+            gap: 25px;
+            align-items: flex-end;
+        }
+
+        /* Cake & Candle */
+        .cake-container {
+            position: relative;
+            margin-top: 30px;
+            cursor: pointer;
+            transform-style: preserve-3d;
+        }
+
+        .candle {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 600;
+            color: #ff6b6b;
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .flame {
+            width: 18px;
+            height: 30px;
+            background: radial-gradient(ellipse at bottom, #ffffff 10%, #ffeb3b 40%, #ff9800 80%, rgba(255,152,0,0) 100%);
+            border-radius: 50% 50% 20% 20%;
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 20px #ff9d00, 0 0 50px #ff9d00, 0 0 80px #ffeb3b;
+            animation: flicker 0.15s infinite alternate;
+        }
+
+        @keyframes flicker {
+            0% { transform: translateX(-50%) scale(0.95) skewX(-2deg); opacity: 0.9; }
+            100% { transform: translateX(-50%) scale(1.05) skewX(2deg); opacity: 1; }
+        }
+
+        /* Message Card */
+        .card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(15px);
+            padding: 50px;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1), inset 0 0 0 2px rgba(255,255,255,0.5);
+            max-width: 650px;
+            line-height: 1.8;
+            font-size: 1.3rem;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            transform: translateY(30px);
+        }
+
+        .card h2 {
+            font-family: 'Playfair Display', serif;
+            color: #d1495b;
+            margin-bottom: 25px;
+            font-size: 2.5rem;
+        }
+
+        .highlight {
+            color: #d1495b;
+            font-weight: 600;
+        }
+
+        .mic-instruction {
+            margin-top: 25px;
+            font-size: 1rem;
+            opacity: 0.8;
+            background: rgba(255,255,255,0.5);
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="sparkles"></canvas>
+
+    <button id="start-btn">Enter the Magical Garden ✨</button>
+
+    <div id="scene1" class="scene">
+        <h1>HAPPY BIRTHDAY<br>JEEVIKA ✨</h1>
+    </div>
+
+    <div id="scene2" class="scene active">
+        <div id="instruction-text">
+            <h2>Blow the candle, my baby girl ✨</h2>
+            <div class="mic-instruction">(Blow softly into your mic or tap the cake 🎂)</div>
+        </div>
+        
+        <div class="cake-container" id="cake-interact">
+            <div class="flame" id="flame"></div>
+            <div class="candle">19</div>
+            <div class="plush" style="font-size: 7.5rem; margin-top: 25px;">🎂</div>
+        </div>
+
+        <div class="garden-container">
+            <div class="plush animal">🧸</div>
+            <div class="plush animal">🐰</div>
+            <div class="plush animal">🐱</div>
+            <div class="plush animal">🌸</div>
+        </div>
+    </div>
+
+    <div id="scene3" class="scene">
+        <div class="card" id="message-card">
+            <h2>Happy 19th Birthday, Queen 💖</h2>
+            <p>My sweetest <span class="highlight">Bubu</span>,<br>
+            you make my world brighter every single day.<br>
+            Ever since our beautiful journey began on <strong>March 16, 2021</strong>, <br>
+            you have been the most magical part of my life.</p>
+            <br>
+            <p>May your life always be filled with love, laughter,<br>
+            and beautiful moments.</p>
+            <p style="margin-top: 25px; font-family: 'Playfair Display', serif; color: #d1495b; font-size: 1.6rem;">I love you,<br>Jeet ✨</p>
+        </div>
+        <div class="garden-container" style="bottom: 5%;">
+            <div class="plush animal-cheer">🧸</div>
+            <div class="plush animal-cheer">🐰</div>
+        </div>
+    </div>
+
+    <script>
+        // --- Canvas Sparkles Background ---
+        const canvas = document.getElementById('sparkles');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particlesArray = [];
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = Math.random() * -1 - 0.5;
+                this.opacity = Math.random();
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.y < 0) {
+                    this.y = canvas.height;
+                    this.x = Math.random() * canvas.width;
+                }
+                this.opacity += (Math.random() - 0.5) * 0.1;
+                if(this.opacity < 0) this.opacity = 0;
+                if(this.opacity > 1) this.opacity = 1;
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initSparkles() {
+            for (let i = 0; i < 100; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animateSparkles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            requestAnimationFrame(animateSparkles);
+        }
+        initSparkles();
+        animateSparkles();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // --- Core Logic & Animations ---
+        const startBtn = document.getElementById('start-btn');
+        let audioContext, analyser, microphone;
+        let isCandleBlown = false;
+
+        // Cinematic idle animations for plushies
+        gsap.to(".animal", {y: -20, yoyo: true, repeat: -1, stagger: 0.15, duration: 1.2, ease: "sine.inOut"});
+
+        startBtn.addEventListener('click', () => {
+            gsap.to(startBtn, {opacity: 0, scale: 0.8, duration: 0.5, onComplete: () => startBtn.style.display = 'none'});
+            initAudio(); 
+            startCinematic();
+        });
+
+        function startCinematic() {
+            const tl = gsap.timeline();
+
+            // Scene 1: Grand Intro
+            tl.to("#scene1", {opacity: 1, duration: 2.5, ease: "power2.out"})
+              .to("#scene1", {opacity: 0, duration: 1.5, delay: 2.5, y: -30})
+              
+            // Scene 2: Garden & Cake Reveal
+              .to("#scene2", {opacity: 1, duration: 2, ease: "power2.out", onComplete: listenForBlow});
+        }
+
+        // --- Microphone Logic ---
+        async function initAudio() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                microphone = audioContext.createMediaStreamSource(stream);
+                microphone.connect(analyser);
+                analyser.fftSize = 256;
+            } catch (err) {
+                console.log("Mic access denied, tap fallback active.");
+            }
+        }
+
+        function listenForBlow() {
+            if (!audioContext || isCandleBlown) return;
+            
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            
+            function checkVolume() {
+                if (isCandleBlown) return;
+                analyser.getByteFrequencyData(dataArray);
+                
+                let sum = 0;
+                for(let i = 0; i < bufferLength; i++) { sum += dataArray[i]; }
+                let average = sum / bufferLength;
+
+                if (average > 65) { 
+                    triggerCelebration();
+                } else {
+                    requestAnimationFrame(checkVolume);
+                }
+            }
+            checkVolume();
+        }
+
+        // Tap Fallback
+        document.getElementById('cake-interact').addEventListener('click', () => {
+            if (!isCandleBlown) triggerCelebration();
+        });
+
+        function triggerCelebration() {
+            isCandleBlown = true;
+            
+            // Smoke effect & extinguish
+            gsap.to("#flame", {opacity: 0, scale: 0, y: -20, duration: 0.4, ease: "power2.in"});
+            
+            // Grand Confetti Explosion
+            var duration = 3000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#ffb6c1', '#ffdab9', '#ffffff']
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#ffb6c1', '#ffdab9', '#ffffff']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+
+            // Transition to Final Message
+            const tl = gsap.timeline();
+            tl.to("#scene2", {opacity: 0, duration: 1.5, delay: 1.5})
+              .to("#scene3", {opacity: 1, duration: 2})
+              .to("#message-card", {y: 0, duration: 1.5, ease: "back.out(1.2)"}, "-=1.5")
+              .call(playVoiceMessage);
+              
+            // Joyful animal jumps
+            gsap.to(".animal-cheer", {y: -40, rotation: 10, yoyo: true, repeat: -1, stagger: 0.1, duration: 0.3, ease: "power1.inOut"});
+        }
+
+        // --- Text to Speech Logic ---
+        function playVoiceMessage() {
+            const msg = new SpeechSynthesisUtterance("Happy 19th Birthday Bhavika! Enjoy your day, Queen!");
+            
+            let voices = window.speechSynthesis.getVoices();
+            let femaleVoice = voices.find(voice => voice.name.includes('Female') || voice.name.includes('Samantha') || voice.name.includes('Google UK English Female'));
+            if(femaleVoice) msg.voice = femaleVoice;
+            
+            msg.rate = 0.95;
+            msg.pitch = 1.3; 
+            window.speechSynthesis.speak(msg);
+        }
+        
+        window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+    </script>
+</body>
+</html>
